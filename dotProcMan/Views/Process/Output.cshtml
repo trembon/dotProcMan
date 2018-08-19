@@ -1,0 +1,33 @@
+﻿@model dotProcMan.Models.ShowOutputViewModel
+
+@{
+    ViewData["Title"] = "Output";
+}
+
+<h2>Output</h2>
+
+<form method="post" asp-action="SendInput">
+    <input type="hidden" name="id" value="@Model.ProcessID" />
+    <input type="text" name="data" />
+    <input type="submit" value="Send" />
+</form>
+
+<hr/>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Data</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Rows)
+        {
+            <tr>
+                <td>
+                    @item.Data
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

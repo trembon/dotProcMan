@@ -1,0 +1,13 @@
+﻿@model dotProcMan.Models.ListProcessesViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        @foreach(var process in Model.Processes)
+        {
+            <p><a asp-controller="Process" asp-action="Output" asp-route-id="@process.ID">@process.Name</a></p>
+        }
+    </div>
+</div>
