@@ -45,6 +45,18 @@ namespace dotProcMan
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseStaticFiles(new StaticFileOptions()
+                {
+                    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), @"node_modules")),
+                    RequestPath = new PathString("/npm")
+                });
+
+                app.UseStaticFiles(new StaticFileOptions()
+                {
+                    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), @"Scripts")),
+                    RequestPath = new PathString("/tssources")
+                });
             }
             else
             {
