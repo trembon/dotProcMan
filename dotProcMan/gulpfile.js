@@ -45,7 +45,7 @@ gulp.task("compile:scss", function () {
 });
 
 gulp.task('watch:scss', function () {
-    gulp.watch(paths.scss, ['compile:sass']);
+    gulp.watch(paths.scss, ['compile:scss']);
 });
 
 
