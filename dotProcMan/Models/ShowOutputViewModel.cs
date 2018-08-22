@@ -9,6 +9,8 @@ namespace dotProcMan.Models
     {
         public Guid ProcessID { get; set; }
 
+        public string ProcessName { get; set; }
+
         public IEnumerable<ProcessOutputRow> Rows { get; set; }
     }
 }

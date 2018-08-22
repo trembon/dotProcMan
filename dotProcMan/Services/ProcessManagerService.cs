@@ -16,6 +16,8 @@ namespace dotProcMan.Services
         bool Start(Guid processId);
 
         bool SendInput(Guid processId, string data);
+
+        string GetName(Guid processId);
     }
 
     public class ProcessManagerService : IProcessManagerService, IDisposable
@@ -149,6 +151,15 @@ namespace dotProcMan.Services
             // TODO: try/catch?
             item.Process.StandardInput.WriteLine(data);
             return true;
+        }
+
+        public string GetName(Guid processId)
+        {
+            if (!managedProcesses.ContainsKey(processId))
+                return null;
+
+            ProcessListItem item = managedProcesses[processId];
+            return item.Configuration.Name;
         }
     }
 }

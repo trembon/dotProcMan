@@ -4,30 +4,21 @@
     ViewData["Title"] = "Output";
 }
 
-<h2>Output</h2>
+<h1 class="mb-3">@Model.ProcessName - Output</h1>
+
+<pre class="output-box pre-scrollable">
+    @foreach(var row in Model.Rows)
+    {
+<span class="output-type-@row.Type.ToString().ToLower()">@row.Data</span> @Environment.NewLine
+    }
+</pre>
 
 <form method="post" asp-action="SendInput">
     <input type="hidden" name="id" value="@Model.ProcessID" />
-    <input type="text" name="data" />
-    <input type="submit" value="Send" />
+    <div class="input-group mb-3">
+        <input type="text" name="data" class="form-control" placeholder="Input command" aria-label="Input command" aria-describedby="button-addon2">
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="submit" id="button-addon2">Send</button>
+        </div>
+    </div>
 </form>
-
-<hr/>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Data</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Rows)
-        {
-            <tr>
-                <td>
-                    @item.Data
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>

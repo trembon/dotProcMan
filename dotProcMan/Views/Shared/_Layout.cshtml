@@ -15,23 +15,19 @@
     </environment>
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+
+    <nav class="navbar navbar-dark bg-dark mb-3">
         <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">dotProcMan</a>
-            </div>
+            <a asp-controller="Home" asp-action="Index" class="navbar-brand">dotProcMan</a>
         </div>
     </nav>
 
     <div class="container body-content">
         @RenderBody()
-        <hr />
+    </div>
+
+    <hr />
+    <div class="container">
         <footer>
             <p>&copy; 2018 - dotProcMan</p>
         </footer>
@@ -39,6 +35,7 @@
 
     <environment include="Development">
         <script src="~/npm/jquery/dist/jquery.js"></script>
+        <script src="~/npm/popper.js/dist/umd/popper.js"></script>
         <script src="~/npm/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/main.js" asp-append-version="true"></script>
     </environment>

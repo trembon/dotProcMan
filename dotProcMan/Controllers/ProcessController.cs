@@ -23,7 +23,11 @@ namespace dotProcMan.Controllers
         {
             ShowOutputViewModel model = new ShowOutputViewModel();
             model.ProcessID = id;
+            model.ProcessName = processManagerService.GetName(id);
             model.Rows = processOutputService.Get(id, 100);
+
+            if (model.ProcessName == null)
+                return NotFound();
 
             return View(model);
         }
