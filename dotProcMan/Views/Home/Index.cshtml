@@ -18,17 +18,17 @@
         {
             <tr>
                 <td><a asp-controller="Process" asp-action="Output" asp-route-id="@process.ID">@process.Name</a></td>
-                <td>@process.IsRunning</td>
+                <td>@(process.IsRunning ? "Yes" : "No")</td>
                 <td class="text-center">
                     <div class="dropdown">
                         <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdown-@process.ID" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Actions
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#">Details</a>
-                            <a class="dropdown-item" href="#">Start</a>
-                            <a class="dropdown-item" href="#">Stop</a>
-                            <a class="dropdown-item" href="#">Restart</a>
+                            <a class="dropdown-item" asp-controller="Process" asp-action="Details" asp-route-id="@process.ID">Details</a>
+                            <a class="dropdown-item" href="#" data-jsclick="start" data-process-id="@process.ID">Start</a>
+                            <a class="dropdown-item" href="#" data-jsclick="stop" data-process-id="@process.ID">Stop</a>
+                            <a class="dropdown-item" href="#" data-jsclick="restart" data-process-id="@process.ID">Restart</a>
                         </div>
                     </div>
                 </td>

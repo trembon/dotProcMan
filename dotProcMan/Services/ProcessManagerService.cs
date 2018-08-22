@@ -72,7 +72,7 @@ namespace dotProcMan.Services
 
             if (item.Process != null)
             {
-                if (item.Process.HasExited)
+                if (!item.Process.HasExited)
                 {
                     return false;
                 }
@@ -121,8 +121,8 @@ namespace dotProcMan.Services
                 {
                     item.Process.StandardInput.AutoFlush = true;
 
-                    item.Process.BeginOutputReadLine();
                     item.Process.BeginErrorReadLine();
+                    item.Process.BeginOutputReadLine();
                 }
             }
             catch(Exception ex)
@@ -137,6 +137,11 @@ namespace dotProcMan.Services
         private void StartedProcess_Exited(ManagedProcess process, Process exitedProcess, EventArgs e)
         {
             processOutputService.AddInternalOutput(process.ID, $"Process exited with code: {exitedProcess.ExitCode}");
+
+            exitedProcess.CancelErrorRead();
+            exitedProcess.CancelOutputRead();
+
+            // TODO: handle if process is stopped manually
 
             if (process.AutoRestart && exitedProcess.ExitCode != 0)
                 Task.Delay(1000).ContinueWith(task => Start(process.ID));
