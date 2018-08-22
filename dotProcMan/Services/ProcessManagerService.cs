@@ -33,6 +33,8 @@ namespace dotProcMan.Services
             public ManagedProcess Configuration { get; set; }
 
             public Process Process { get; set; }
+
+            public bool ExitSignaled { get; set; }
         }
 
         private IProcessOutputService processOutputService;
@@ -108,7 +110,7 @@ namespace dotProcMan.Services
                 startedProcess.ErrorDataReceived += (source, ea) => processOutputService.AddErrorOutput(configuration.ID, ea.Data);
 
                 startedProcess.EnableRaisingEvents = true;
-                startedProcess.Exited += (source, ea) => StartedProcess_Exited(configuration, startedProcess, ea);
+                startedProcess.Exited += (source, ea) => StartedProcess_Exited(item, ea);
 
                 item.Process = startedProcess;
             }
@@ -134,24 +136,26 @@ namespace dotProcMan.Services
             return result;
         }
 
-        private void StartedProcess_Exited(ManagedProcess process, Process exitedProcess, EventArgs e)
+        private void StartedProcess_Exited(ProcessListItem item, EventArgs e)
         {
-            processOutputService.AddInternalOutput(process.ID, $"Process exited with code: {exitedProcess.ExitCode}");
+            processOutputService.AddInternalOutput(item.Configuration.ID, $"Process exited with code: {item.Process.ExitCode}");
 
-            exitedProcess.CancelErrorRead();
-            exitedProcess.CancelOutputRead();
+            item.Process.CancelErrorRead();
+            item.Process.CancelOutputRead();
+            
+            if (!item.ExitSignaled && item.Configuration.AutoRestart && item.Process.ExitCode != 0)
+                Task.Delay(1000).ContinueWith(task => Start(item.Configuration.ID));
 
-            // TODO: handle if process is stopped manually
-
-            if (process.AutoRestart && exitedProcess.ExitCode != 0)
-                Task.Delay(1000).ContinueWith(task => Start(process.ID));
+            item.ExitSignaled = false;
         }
 
         public void Dispose()
         {
             foreach(ProcessListItem item in managedProcesses.Values)
             {
-                if(item != null && item.Process != null)
+                item.ExitSignaled = true;
+
+                if (item != null && item.Process != null)
                 {
                     item.Process.Kill();
                     item.Process.Dispose();
@@ -191,6 +195,7 @@ namespace dotProcMan.Services
             if (item.Process == null || item.Process.HasExited)
                 return false;
 
+            item.ExitSignaled = true;
             item.Process.Kill();
             return true;
         }
