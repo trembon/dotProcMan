@@ -105,7 +105,6 @@ namespace dotProcMan.Services
                 }
 
                 startInfo.CreateNoWindow = true;
-                startInfo.LoadUserProfile = false;
                 startInfo.UseShellExecute = false;
 
                 startInfo.RedirectStandardError = true;
@@ -160,14 +159,23 @@ namespace dotProcMan.Services
 
         public void Dispose()
         {
-            foreach(ProcessListItem item in managedProcesses.Values)
+            foreach (ProcessListItem item in managedProcesses.Values)
             {
                 item.ExitSignaled = true;
 
                 if (item != null && item.Process != null)
                 {
-                    item.Process.Kill();
-                    item.Process.Dispose();
+                    try
+                    {
+                        item.Process.Kill();
+                    }
+                    catch { }
+
+                    try
+                    {
+                        item.Process.Dispose();
+                    }
+                    catch { }
                 }
             }
         }

@@ -6,11 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="appsettings.Development.json" />
     <Content Remove="package-lock.json" />
+    <Content Remove="wwwroot\css\main.css" />
+    <Content Remove="wwwroot\js\main.js" />
+    <Content Remove="wwwroot\js\main.js.map" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Scripts\main.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="appsettings.Development.json" />
+    <None Include="wwwroot\css\main.css" />
+    <None Include="wwwroot\js\main.js" />
+    <None Include="wwwroot\js\main.js.map" />
   </ItemGroup>
 
   <ItemGroup>

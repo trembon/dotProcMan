@@ -21,7 +21,7 @@ paths.concatJsLibsDest = paths.webroot + "js/libs.min.js";
 paths.concatCssDest = paths.webroot + "css/site.min.css";
 paths.concatCssLibsDest = paths.webroot + "css/libs.min.css";
 
-paths.jsLibs = [paths.libs + "jquery/dist/jquery.js", paths.libs + "bootstrap/dist/js/bootstrap.js", paths.libs + "popper.js/dist/umd/popper.js"];
+paths.jsLibs = [paths.libs + "jquery/dist/jquery.js", paths.libs + "popper.js/dist/umd/popper.js", paths.libs + "bootstrap/dist/js/bootstrap.js"];
 paths.cssLibs = [paths.libs + "bootstrap/dist/css/bootstrap.css"];
 
 
