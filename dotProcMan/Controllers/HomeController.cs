@@ -21,7 +21,12 @@ namespace dotProcMan.Controllers
         public IActionResult Index()
         {
             ListProcessesViewModel model = new ListProcessesViewModel();
-            model.Processes = processManagerService.GetProcesses();
+            model.Processes = processManagerService.GetProcesses().Select(p => new ListProcessItem
+            {
+                ID = p.ID,
+                Name = p.Name,
+                IsRunning = processManagerService.IsRunning(p.ID)
+            });
 
             return View(model);
         }

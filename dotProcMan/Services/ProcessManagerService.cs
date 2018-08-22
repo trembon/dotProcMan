@@ -15,9 +15,15 @@ namespace dotProcMan.Services
 
         bool Start(Guid processId);
 
+        bool Stop(Guid processId);
+
+        bool Restart(Guid processId);
+
         bool SendInput(Guid processId, string data);
 
         string GetName(Guid processId);
+
+        bool IsRunning(Guid processId);
     }
 
     public class ProcessManagerService : IProcessManagerService, IDisposable
@@ -64,50 +70,59 @@ namespace dotProcMan.Services
             ProcessListItem item = managedProcesses[processId];
             ManagedProcess configuration = item.Configuration;
 
-            // TODO: check if process is already running
-
-            ProcessStartInfo startInfo = new ProcessStartInfo(configuration.FileName);
-
-            if (!string.IsNullOrWhiteSpace(configuration.Args))
-                startInfo.Arguments = configuration.Args;
-
-            if (!string.IsNullOrWhiteSpace(configuration.WorkingDirectory))
-                startInfo.WorkingDirectory = configuration.WorkingDirectory;
-
-            if(!string.IsNullOrWhiteSpace(configuration.Username) && !string.IsNullOrWhiteSpace(configuration.Password))
+            if (item.Process != null)
             {
-                startInfo.UserName = configuration.Username;
-                startInfo.PasswordInClearText = configuration.Password;
+                if (item.Process.HasExited)
+                {
+                    return false;
+                }
             }
+            else
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo(configuration.FileName);
 
-            startInfo.CreateNoWindow = true;
-            startInfo.LoadUserProfile = false;
-            startInfo.UseShellExecute = false;
-            
-            startInfo.RedirectStandardError = true;
-            startInfo.RedirectStandardInput = true;
-            startInfo.RedirectStandardOutput = true;
+                if (!string.IsNullOrWhiteSpace(configuration.Args))
+                    startInfo.Arguments = configuration.Args;
 
-            Process startedProcess = new Process();
-            item.Process = startedProcess;
-            startedProcess.StartInfo = startInfo;
+                if (!string.IsNullOrWhiteSpace(configuration.WorkingDirectory))
+                    startInfo.WorkingDirectory = configuration.WorkingDirectory;
 
-            startedProcess.OutputDataReceived += (source, ea) => processOutputService.AddStandardOutput(configuration.ID, ea.Data);
-            startedProcess.ErrorDataReceived += (source, ea) => processOutputService.AddErrorOutput(configuration.ID, ea.Data);
+                if (!string.IsNullOrWhiteSpace(configuration.Username) && !string.IsNullOrWhiteSpace(configuration.Password))
+                {
+                    startInfo.UserName = configuration.Username;
+                    startInfo.PasswordInClearText = configuration.Password;
+                }
 
-            startedProcess.EnableRaisingEvents = true;
-            startedProcess.Exited += (source, ea) => StartedProcess_Exited(configuration, startedProcess, ea);
+                startInfo.CreateNoWindow = true;
+                startInfo.LoadUserProfile = false;
+                startInfo.UseShellExecute = false;
+
+                startInfo.RedirectStandardError = true;
+                startInfo.RedirectStandardInput = true;
+                startInfo.RedirectStandardOutput = true;
+
+                Process startedProcess = new Process();
+                startedProcess.StartInfo = startInfo;
+
+                startedProcess.OutputDataReceived += (source, ea) => processOutputService.AddStandardOutput(configuration.ID, ea.Data);
+                startedProcess.ErrorDataReceived += (source, ea) => processOutputService.AddErrorOutput(configuration.ID, ea.Data);
+
+                startedProcess.EnableRaisingEvents = true;
+                startedProcess.Exited += (source, ea) => StartedProcess_Exited(configuration, startedProcess, ea);
+
+                item.Process = startedProcess;
+            }
 
             bool result;
             try
             {
-                result = startedProcess.Start();
+                result = item.Process.Start();
                 if (result)
                 {
-                    startedProcess.StandardInput.AutoFlush = true;
+                    item.Process.StandardInput.AutoFlush = true;
 
-                    startedProcess.BeginOutputReadLine();
-                    startedProcess.BeginErrorReadLine();
+                    item.Process.BeginOutputReadLine();
+                    item.Process.BeginErrorReadLine();
                 }
             }
             catch(Exception ex)
@@ -131,7 +146,7 @@ namespace dotProcMan.Services
         {
             foreach(ProcessListItem item in managedProcesses.Values)
             {
-                if(item != null && item.Process != null && !item.Process.HasExited)
+                if(item != null && item.Process != null)
                 {
                     item.Process.Kill();
                     item.Process.Dispose();
@@ -160,6 +175,42 @@ namespace dotProcMan.Services
 
             ProcessListItem item = managedProcesses[processId];
             return item.Configuration.Name;
+        }
+
+        public bool Stop(Guid processId)
+        {
+            if (!managedProcesses.ContainsKey(processId))
+                return false;
+
+            ProcessListItem item = managedProcesses[processId];
+            if (item.Process == null || item.Process.HasExited)
+                return false;
+
+            item.Process.Kill();
+            return true;
+        }
+
+        public bool Restart(Guid processId)
+        {
+            if (!managedProcesses.ContainsKey(processId))
+                return false;
+
+            ProcessListItem item = managedProcesses[processId];
+
+            Stop(processId);
+            item.Process.WaitForExit();
+            return Start(processId);
+        }
+
+        public bool IsRunning(Guid processId)
+        {
+            if (!managedProcesses.ContainsKey(processId))
+                return false;
+
+            if (managedProcesses[processId].Process == null)
+                return false;
+
+            return !managedProcesses[processId].Process.HasExited;
         }
     }
 }

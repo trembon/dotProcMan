@@ -7,6 +7,6 @@ namespace dotProcMan.Models
 {
     public class ListProcessesViewModel
     {
-        public IEnumerable<ManagedProcess> Processes { get; set; }
+        public IEnumerable<ListProcessItem> Processes { get; set; }
     }
 }
