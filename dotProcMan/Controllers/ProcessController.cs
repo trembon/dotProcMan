@@ -32,6 +32,16 @@ namespace dotProcMan.Controllers
             return View(model);
         }
 
+        public IActionResult Details(Guid id)
+        {
+            ManagedProcess process = processManagerService.GetProcess(id);
+
+            if (process == null)
+                return NotFound();
+
+            return View(process);
+        }
+
         [HttpPost]
         public IActionResult SendInput(Guid id, string data)
         {

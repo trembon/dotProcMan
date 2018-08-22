@@ -1,0 +1,35 @@
+﻿@model dotProcMan.Models.ManagedProcess
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>@Model.Name - Details</h1>
+
+<hr/>
+
+<dl class="row">
+    <dt class="col-2">Name</dt>
+    <dd class="col-10">@Model.Name&nbsp;</dd>
+
+    <dt class="col-2">File name</dt>
+    <dd class="col-10">@Model.FileName&nbsp;</dd>
+
+    <dt class="col-2">Arguments</dt>
+    <dd class="col-10">@Model.Args&nbsp;</dd>
+
+    <dt class="col-2">Working directory</dt>
+    <dd class="col-10">@Model.WorkingDirectory&nbsp;</dd>
+
+    <dt class="col-2">Username</dt>
+    <dd class="col-10">@Model.Username&nbsp;</dd>
+
+    <dt class="col-2">Password</dt>
+    <dd class="col-10">@(!string.IsNullOrWhiteSpace(Model.Password) ? "*****" : string.Empty)&nbsp;</dd>
+
+    <dt class="col-2">Start delay</dt>
+    <dd class="col-10">@Model.StartDelay&nbsp;</dd>
+
+    <dt class="col-2">Auto restart</dt>
+    <dd class="col-10">@(Model.AutoRestart ? "Yes" : "No")&nbsp;</dd>
+</dl>

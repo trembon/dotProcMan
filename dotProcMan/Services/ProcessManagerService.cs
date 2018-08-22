@@ -10,6 +10,7 @@ namespace dotProcMan.Services
     public interface IProcessManagerService
     {
         void Initialize(IEnumerable<ManagedProcess> processes);
+        ManagedProcess GetProcess(Guid processId);
 
         IEnumerable<ManagedProcess> GetProcesses();
 
@@ -46,6 +47,14 @@ namespace dotProcMan.Services
             this.processOutputService = processOutputService;
 
             managedProcesses = new Dictionary<Guid, ProcessListItem>();
+        }
+        
+        public ManagedProcess GetProcess(Guid processId)
+        {
+            if (managedProcesses.ContainsKey(processId))
+                return managedProcesses[processId].Configuration;
+
+            return null;
         }
 
         public IEnumerable<ManagedProcess> GetProcesses()
