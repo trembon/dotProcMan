@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace dotProcMan.Services
@@ -25,6 +26,8 @@ namespace dotProcMan.Services
     {
         private Dictionary<Guid, List<ProcessOutputRow>> output;
         private ConcurrentDictionary<Guid, object> outputLocks;
+
+        private Regex coloredLinuxOutput = new Regex("\\e.{1,3}m", RegexOptions.Compiled);
 
         public ProcessOutputService()
         {
@@ -78,6 +81,9 @@ namespace dotProcMan.Services
             {
                 if (!output.ContainsKey(id))
                     output.Add(id, new List<ProcessOutputRow>());
+
+                if (coloredLinuxOutput.IsMatch(data))
+                    data = coloredLinuxOutput.Replace(data, "");
 
                 output[id].Add(new ProcessOutputRow
                 {

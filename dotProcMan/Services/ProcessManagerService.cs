@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace dotProcMan.Services
@@ -106,6 +107,10 @@ namespace dotProcMan.Services
 
                 startInfo.CreateNoWindow = true;
                 startInfo.UseShellExecute = false;
+
+                startInfo.StandardErrorEncoding = Encoding.UTF8;
+                startInfo.StandardInputEncoding = Encoding.UTF8;
+                startInfo.StandardOutputEncoding = Encoding.UTF8;
 
                 startInfo.RedirectStandardError = true;
                 startInfo.RedirectStandardInput = true;
