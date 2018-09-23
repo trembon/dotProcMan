@@ -9,7 +9,7 @@
 <pre class="output-box pre-scrollable">
     @foreach(var row in Model.Rows)
     {
-<span class="output-type-@row.Type.ToString().ToLower()">@row.Data</span> @Environment.NewLine
+<span class="output-type-@row.Type.ToString().ToLower()"><span class="font-weight-bold">@row.Timestamp:</span> @row.Data</span> @Environment.NewLine
     }
 </pre>
 
