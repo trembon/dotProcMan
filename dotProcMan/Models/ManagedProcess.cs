@@ -25,6 +25,8 @@ namespace dotProcMan.Models
 
         public bool AutoRestart { get; set; }
 
+        public string RestartSchedule { get; set; }
+
         public ManagedProcess()
         {
             this.ID = Guid.NewGuid();

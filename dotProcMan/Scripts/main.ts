@@ -9,21 +9,21 @@
 
         switch ($t.data("jsclick")) {
             case "start":
-                start($t.data("processId"));
+                process_start($t.data("processId"));
                 break;
 
             case "stop":
-                stop($t.data("processId"));
+                process_stop($t.data("processId"));
                 break;
 
             case "restart":
-                restart($t.data("processId"));
+                process_restart($t.data("processId"));
                 break;
         }
     });
 });
 
-function start(processId: string): void {
+function process_start(processId: string): void {
     $.post(`/api/process/start?id=${processId}`, result => {
         if (result) {
             window.location.reload();
@@ -33,7 +33,7 @@ function start(processId: string): void {
     });
 }
 
-function stop(processId: string): void {
+function process_stop(processId: string): void {
     $.post(`/api/process/stop?id=${processId}`, result => {
         if (result) {
             window.location.reload();
@@ -43,7 +43,7 @@ function stop(processId: string): void {
     });
 }
 
-function restart(processId: string): void {
+function process_restart(processId: string): void {
     $.post(`/api/process/restart?id=${processId}`, result => {
         if (result) {
             window.location.reload();

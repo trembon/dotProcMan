@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dotProcMan.Extensions;
 using dotProcMan.Models;
 using dotProcMan.Services;
 using Microsoft.AspNetCore.Builder;
@@ -35,12 +36,15 @@ namespace dotProcMan
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            services.AddScoped<IScheduledJobSerivce, ScheduledJobSerivce>();
             services.AddSingleton<IProcessManagerService, ProcessManagerService>();
             services.AddSingleton<IProcessOutputService, ProcessOutputService>();
+
+            services.AddQuartz();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IProcessManagerService processManagerService)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IProcessManagerService processManagerService, IScheduledJobSerivce scheduledJobSerivce)
         {
             if (env.IsDevelopment())
             {
@@ -77,6 +81,9 @@ namespace dotProcMan
             Configuration.Bind("Processes", processes);
 
             processManagerService.Initialize(processes);
+            scheduledJobSerivce.Initialize(processes);
+
+            app.UseQuartz();
         }
     }
 }
