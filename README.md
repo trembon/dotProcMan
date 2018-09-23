@@ -23,7 +23,8 @@ Depending on dotnet core version and operating system, running a process as a di
 		"Username": "", // username, to start the executable as another user
 		"Password": "", // password, to start the executable as another user
 		"StartDelay": 1, // seconds to delay automatic start when dotProcMan starts, 0 = no auto start
-		"AutoRestart": false // if dotProcMan should restart the process if it exists with another exit code than 0
+		"AutoRestart": false, // if dotProcMan should restart the process if it exists with another exit code than 0
+		"RestartSchedule": "0 0/1 * 1/1 * ? *" // if the process should be scheduled to be restarted with a cron expression (with quartz)
 	}
 ]
 ```
